@@ -2,7 +2,7 @@ import ply.lex as lex
 
  # List of token names.   This is always required
 tokens = (
-    'STRING',       'OPENING_TAG',      'CLOSING_TAG',      'SINGLE_TAG',
+    'STRING',       'OPENING_TAG',      'CLOSING_TAG',      'SINGLE_TAG',   'COMMENT',
 
     'HTML_O',       'HEAD_O',           'TITLE_O',          'BODY_O',       'A_O',
     'FONT_O',       'CENTER_O',         'BR_O',             'P_O',          'H1_O',
@@ -29,7 +29,7 @@ word = r'(\w)+'
 
 # Regular expression rules for simple tokens
 def t_STRING(t):
-    r'(\w|[ ]|\.|\,|\:|\;|\'|\"|\(|\)|\-|\_|\=|\{|\+|\}|\[|\]|\/|\\|\<|\>|\!|\@|\#|\$|\%|\^|\&|\*|\?|\~|\`)+'
+    r'(\w|[ ]|\.|\,|\:|\;|\'|\"|\(|\)|\-|\_|\=|\{|\+|\}|\[|\]|\/|\\|\!|\@|\#|\$|\%|\^|\&|\*|\?|\~|\`)+'
     return t
 
 def t_SINGLE_TAG(t):
@@ -40,7 +40,7 @@ def t_SINGLE_TAG(t):
 
 def t_OPENING_TAG(t):
     # r'<\w+([\w+ = (\'\w+\' | \"(\w+|\.|\:|\/)\")])*>'
-    r'<\w+(\s\w+=[\',\"][\w,\/,\:,\.]+[\',\"])*\s*>'
+    r'<\w+(\s\w+=[\',\"][\w,\/,\:,\.,\#,\%]+[\',\"])*\s*>'
     tmp=t.value[1:-1]
     tmp_split=tmp.split()
     lst=[]
@@ -55,6 +55,10 @@ def t_OPENING_TAG(t):
 def t_CLOSING_TAG(t):
     r'</(\w)+>'
     t.type=t.value[2:-1].upper()+'_E'
+    return t
+
+def t_COMMENT(t):
+    r'<!--[^>]*-->'
     return t
 
 t_ignore  = ' \t'
@@ -72,20 +76,20 @@ def t_error(t):
  # Build the lexer
 lexer = lex.lex()
 
-html='''<hTmL>
-<head>
-    <title>Het12Patel DEMO leX1</title>
-</head>
-<body>
-    <h1>This is my heading</h1>
-    <a href="https://google.com/home/login">Google Search</a>
-    <br/>
-</body>
-</html>
-'''
-file = open("Sample document.html","r")
- # Give the lexer some input
-lexer.input(file.read())
-
-for token in lexer:
-    print(token)
+# html='''<hTmL>
+# <head>
+#     <title>Het12Patel DEMO leX1</title>
+# </head>
+# <body>
+#     <h1>This is my heading</h1>
+#     <a href="https://google.com/home/login">Google Search</a>
+#     <br/>
+# </body>
+# </html>
+# '''
+# # file = open("Sample document.html","r")
+#  # Give the lexer some input
+# lexer.input(file.read())
+#
+# for token in lexer:
+#     print(token)

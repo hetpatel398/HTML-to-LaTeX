@@ -1,0 +1,296 @@
+Created by PLY version 3.9 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CENTER_O
+    DT_E
+    I_O
+    FONT_E
+    SUB_O
+    A_E
+    H4_O
+    TH_E
+    TABLE_O
+    EM_O
+    DD_E
+    DL_E
+    IMG_O
+    U_E
+    STRONG_O
+    TABLE_E
+    SMALL_O
+    BR_S
+    CLOSING_TAG
+    SUB_E
+    U_O
+    IMG_E
+    B_E
+    STRONG_E
+    DIV_O
+    I_E
+    CENTER_E
+    UL_E
+    SUP_O
+    A_O
+    SINGLE_TAG
+    TBODY_O
+    TT_O
+    H2_E
+    DD_O
+    TT_E
+    CAPTION_E
+    SMALL_E
+    DT_O
+    TR_O
+    TH_O
+    H2_O
+    CAPTION_O
+    COMMENT
+    UL_O
+    DL_O
+    FONT_O
+    DIV_E
+    H3_E
+    BR_E
+    H4_E
+    B_O
+    P_O
+    P_E
+    H3_O
+    TBODY_E
+    TD_E
+    LI_E
+    EM_E
+    OL_O
+    OPENING_TAG
+    BR_O
+    TR_E
+    SUP_E
+    LI_O
+    TD_O
+    OL_E
+
+Grammar
+
+Rule 0     S' -> init
+Rule 1     init -> document
+Rule 2     document -> HTML_O head body HTML_E
+Rule 3     head -> HEAD_O TITLE_O STRING TITLE_E HEAD_E
+Rule 4     body -> BODY_O H1_O STRING H1_E BODY_E
+
+Terminals, with rules where they appear
+
+A_E                  : 
+A_O                  : 
+BODY_E               : 4
+BODY_O               : 4
+BR_E                 : 
+BR_O                 : 
+BR_S                 : 
+B_E                  : 
+B_O                  : 
+CAPTION_E            : 
+CAPTION_O            : 
+CENTER_E             : 
+CENTER_O             : 
+CLOSING_TAG          : 
+COMMENT              : 
+DD_E                 : 
+DD_O                 : 
+DIV_E                : 
+DIV_O                : 
+DL_E                 : 
+DL_O                 : 
+DT_E                 : 
+DT_O                 : 
+EM_E                 : 
+EM_O                 : 
+FONT_E               : 
+FONT_O               : 
+H1_E                 : 4
+H1_O                 : 4
+H2_E                 : 
+H2_O                 : 
+H3_E                 : 
+H3_O                 : 
+H4_E                 : 
+H4_O                 : 
+HEAD_E               : 3
+HEAD_O               : 3
+HTML_E               : 2
+HTML_O               : 2
+IMG_E                : 
+IMG_O                : 
+I_E                  : 
+I_O                  : 
+LI_E                 : 
+LI_O                 : 
+OL_E                 : 
+OL_O                 : 
+OPENING_TAG          : 
+P_E                  : 
+P_O                  : 
+SINGLE_TAG           : 
+SMALL_E              : 
+SMALL_O              : 
+STRING               : 3 4
+STRONG_E             : 
+STRONG_O             : 
+SUB_E                : 
+SUB_O                : 
+SUP_E                : 
+SUP_O                : 
+TABLE_E              : 
+TABLE_O              : 
+TBODY_E              : 
+TBODY_O              : 
+TD_E                 : 
+TD_O                 : 
+TH_E                 : 
+TH_O                 : 
+TITLE_E              : 3
+TITLE_O              : 3
+TR_E                 : 
+TR_O                 : 
+TT_E                 : 
+TT_O                 : 
+UL_E                 : 
+UL_O                 : 
+U_E                  : 
+U_O                  : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+body                 : 2
+document             : 1
+head                 : 2
+init                 : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . init
+    (1) init -> . document
+    (2) document -> . HTML_O head body HTML_E
+
+    HTML_O          shift and go to state 3
+
+    document                       shift and go to state 1
+    init                           shift and go to state 2
+
+state 1
+
+    (1) init -> document .
+
+    $end            reduce using rule 1 (init -> document .)
+
+
+state 2
+
+    (0) S' -> init .
+
+
+
+state 3
+
+    (2) document -> HTML_O . head body HTML_E
+    (3) head -> . HEAD_O TITLE_O STRING TITLE_E HEAD_E
+
+    HEAD_O          shift and go to state 4
+
+    head                           shift and go to state 5
+
+state 4
+
+    (3) head -> HEAD_O . TITLE_O STRING TITLE_E HEAD_E
+
+    TITLE_O         shift and go to state 6
+
+
+state 5
+
+    (2) document -> HTML_O head . body HTML_E
+    (4) body -> . BODY_O H1_O STRING H1_E BODY_E
+
+    BODY_O          shift and go to state 8
+
+    body                           shift and go to state 7
+
+state 6
+
+    (3) head -> HEAD_O TITLE_O . STRING TITLE_E HEAD_E
+
+    STRING          shift and go to state 9
+
+
+state 7
+
+    (2) document -> HTML_O head body . HTML_E
+
+    HTML_E          shift and go to state 10
+
+
+state 8
+
+    (4) body -> BODY_O . H1_O STRING H1_E BODY_E
+
+    H1_O            shift and go to state 11
+
+
+state 9
+
+    (3) head -> HEAD_O TITLE_O STRING . TITLE_E HEAD_E
+
+    TITLE_E         shift and go to state 12
+
+
+state 10
+
+    (2) document -> HTML_O head body HTML_E .
+
+    $end            reduce using rule 2 (document -> HTML_O head body HTML_E .)
+
+
+state 11
+
+    (4) body -> BODY_O H1_O . STRING H1_E BODY_E
+
+    STRING          shift and go to state 13
+
+
+state 12
+
+    (3) head -> HEAD_O TITLE_O STRING TITLE_E . HEAD_E
+
+    HEAD_E          shift and go to state 14
+
+
+state 13
+
+    (4) body -> BODY_O H1_O STRING . H1_E BODY_E
+
+    H1_E            shift and go to state 15
+
+
+state 14
+
+    (3) head -> HEAD_O TITLE_O STRING TITLE_E HEAD_E .
+
+    BODY_O          reduce using rule 3 (head -> HEAD_O TITLE_O STRING TITLE_E HEAD_E .)
+
+
+state 15
+
+    (4) body -> BODY_O H1_O STRING H1_E . BODY_E
+
+    BODY_E          shift and go to state 16
+
+
+state 16
+
+    (4) body -> BODY_O H1_O STRING H1_E BODY_E .
+
+    HTML_E          reduce using rule 4 (body -> BODY_O H1_O STRING H1_E BODY_E .)
+
