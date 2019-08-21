@@ -5,9 +5,9 @@ _tabversion = '3.8'
 
 _lr_method = 'LALR'
 
-_lr_signature = '2D62959CE4080C7C47431A6B356EAAEC'
+_lr_signature = '4168AF2B2F1F8CCD78D035074050FE88'
     
-_lr_action_items = {'H1_E':([13,],[15,]),'STRING':([6,11,],[9,13,]),'TITLE_E':([9,],[12,]),'TITLE_O':([4,],[6,]),'HEAD_E':([12,],[14,]),'BODY_E':([15,],[16,]),'$end':([1,2,10,],[-1,0,-2,]),'HTML_E':([7,16,],[10,-4,]),'HEAD_O':([3,],[4,]),'H1_O':([8,],[11,]),'BODY_O':([5,14,],[8,-3,]),'HTML_O':([0,],[3,]),}
+_lr_action_items = {'CENTER_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,16,-2,-2,-10,-11,-2,-2,-2,16,16,16,-12,16,16,16,-9,-8,-13,-14,-7,]),'HTML_E':([8,20,],[14,-6,]),'H1_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,22,-2,-2,-10,-11,-2,-2,-2,22,22,22,-12,22,22,22,-9,-8,-13,-14,-7,]),'FONT_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,17,-2,-2,-10,-11,-2,-2,-2,17,17,17,-12,17,17,17,-9,-8,-13,-14,-7,]),'BR_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,19,-2,-2,-10,-11,-2,-2,-2,19,19,19,-12,19,19,19,-9,-8,-13,-14,-7,]),'P_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,21,-2,-2,-10,-11,-2,-2,-2,21,21,21,-12,21,21,21,-9,-8,-13,-14,-7,]),'HEAD_E':([3,5,6,25,],[-2,10,-5,-4,]),'BR_E':([19,],[28,]),'FONT_E':([11,12,17,18,19,24,27,28,32,33,34,35,36,],[-15,-17,-2,-10,-11,-2,33,-12,-9,-8,-13,-14,-7,]),'A_O':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,23,-2,-2,-10,-11,-2,-2,-2,23,23,23,-12,23,23,23,-9,-8,-13,-14,-7,]),'$end':([2,14,],[0,-1,]),'TITLE_O':([3,5,6,25,],[-2,9,-5,-4,]),'H1_E':([11,12,18,19,22,24,28,30,32,33,34,35,36,],[-15,-17,-10,-11,-2,-2,-12,35,-9,-8,-13,-14,-7,]),'HTML_O':([0,],[1,]),'BR_S':([7,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[-2,-15,-17,18,-2,-2,-10,-11,-2,-2,-2,18,18,18,-12,18,18,18,-9,-8,-13,-14,-7,]),'HEAD_O':([1,],[3,]),'BODY_E':([7,11,12,13,18,19,24,28,32,33,34,35,36,],[-2,-15,-17,20,-10,-11,-2,-12,-9,-8,-13,-14,-7,]),'STRING':([7,9,11,12,13,16,17,18,19,21,22,23,24,26,27,28,29,30,31,32,33,34,35,36,],[11,15,-15,-17,11,11,11,-10,-11,11,11,11,11,11,11,-12,11,11,11,-9,-8,-13,-14,-7,]),'P_E':([11,12,18,19,21,24,28,29,32,33,34,35,36,],[-15,-17,-10,-11,-2,-2,-12,34,-9,-8,-13,-14,-7,]),'CENTER_E':([11,12,16,18,19,24,26,28,32,33,34,35,36,],[-15,-17,-2,-10,-11,-2,32,-12,-9,-8,-13,-14,-7,]),'BODY_O':([4,10,],[7,-3,]),'TITLE_E':([15,],[25,]),'A_E':([11,12,18,19,23,24,28,31,32,33,34,35,36,],[-15,-17,-10,-11,-2,-2,-12,36,-9,-8,-13,-14,-7,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'body':([5,],[7,]),'head':([3,],[5,]),'document':([0,],[1,]),'init':([0,],[2,]),}
+_lr_goto_items = {'head_data':([3,],[5,]),'head':([1,],[4,]),'body_data':([7,13,16,17,21,22,23,24,26,27,29,30,31,],[13,24,26,27,29,30,31,24,24,24,24,24,24,]),'empty':([3,7,13,16,17,21,22,23,24,26,27,29,30,31,],[6,12,12,12,12,12,12,12,12,12,12,12,12,12,]),'document':([0,],[2,]),'body':([4,],[8,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -25,9 +25,22 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> init","S'",1,None,None,None),
-  ('init -> document','init',1,'p_init','YACC_ply.py',6),
-  ('document -> HTML_O head body HTML_E','document',4,'p_document','YACC_ply.py',8),
-  ('head -> HEAD_O TITLE_O STRING TITLE_E HEAD_E','head',5,'p_head','YACC_ply.py',14),
-  ('body -> BODY_O H1_O STRING H1_E BODY_E','body',5,'p_body','YACC_ply.py',19),
+  ("S' -> document","S'",1,None,None,None),
+  ('document -> HTML_O head body HTML_E','document',4,'p_document','YACC_ply.py',13),
+  ('empty -> <empty>','empty',0,'p_empty','YACC_ply.py',21),
+  ('head -> HEAD_O head_data HEAD_E','head',3,'p_head','YACC_ply.py',25),
+  ('head_data -> head_data TITLE_O STRING TITLE_E','head_data',4,'p_head_data','YACC_ply.py',29),
+  ('head_data -> empty','head_data',1,'p_head_data_empty','YACC_ply.py',33),
+  ('body -> BODY_O body_data BODY_E','body',3,'p_body','YACC_ply.py',37),
+  ('body_data -> body_data A_O body_data A_E','body_data',4,'p_a','YACC_ply.py',41),
+  ('body_data -> body_data FONT_O body_data FONT_E','body_data',4,'p_font','YACC_ply.py',46),
+  ('body_data -> body_data CENTER_O body_data CENTER_E','body_data',4,'p_center','YACC_ply.py',50),
+  ('body_data -> body_data BR_S','body_data',2,'p_br','YACC_ply.py',54),
+  ('body_data -> body_data BR_O','body_data',2,'p_br','YACC_ply.py',55),
+  ('body_data -> body_data BR_O BR_E','body_data',3,'p_br','YACC_ply.py',56),
+  ('body_data -> body_data P_O body_data P_E','body_data',4,'p_p','YACC_ply.py',60),
+  ('body_data -> body_data H1_O body_data H1_E','body_data',4,'p_H1','YACC_ply.py',64),
+  ('body_data -> STRING','body_data',1,'p_body_data_string','YACC_ply.py',68),
+  ('body_data -> body_data body_data','body_data',2,'p_body_data_star','YACC_ply.py',80),
+  ('body_data -> empty','body_data',1,'p_body_data_empty','YACC_ply.py',84),
 ]

@@ -33,8 +33,8 @@ def t_STRING(t):
     return t
 
 def t_SINGLE_TAG(t):
-    r'<(\w)+/>'
-    t.type=t.value[1:-2].upper()+'_S'
+    r'<(\w)+\s*/>'
+    t.type=t.value[1:-2].strip().upper()+'_S'
     # t.value=[t.value[1:-2]]
     return t
 
@@ -46,9 +46,11 @@ def t_OPENING_TAG(t):
     lst=[]
     lst.append(tmp_split[0])
     t.type=tmp_split[0].upper()+'_O'
+    attrs=dict()
     for s in tmp_split[1:]:
         attr=s.split('=')
-        lst.append((attr[0], attr[1][1:-1]))
+        attrs[attr[0]] = attr[1][1:-1]
+    lst.append(attrs)
     t.value=lst
     return t;
 
@@ -70,7 +72,7 @@ def t_newline(t):
 
  # Error handling rule
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("Illegal character '%s' on line %s" % (t.value[0], t.lexer.lineno))
     t.lexer.skip(1)
 
  # Build the lexer
