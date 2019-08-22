@@ -30,6 +30,14 @@ word = r'(\w)+'
 # Regular expression rules for simple tokens
 def t_STRING(t):
     r'(\w|[ ]|\.|\,|\:|\;|\'|\"|\(|\)|\-|\_|\=|\{|\+|\}|\[|\]|\/|\\|\!|\@|\#|\$|\%|\^|\&|\*|\?|\~|\`)+'
+    t.value=t.value.replace('\\','\\\\')
+    t.value=t.value.replace('_','\_')
+    t.value=t.value.replace('#','\#')
+    t.value=t.value.replace('%','\%')
+    t.value=t.value.replace('~','\~')
+    t.value=t.value.replace('^','\^')
+    t.value=t.value.replace('{','\{')
+    t.value=t.value.replace('}','\}')
     return t
 
 def t_SINGLE_TAG(t):
@@ -60,7 +68,8 @@ def t_CLOSING_TAG(t):
     return t
 
 def t_COMMENT(t):
-    r'<!--[^>]*-->'
+    r'<!--(.|\n)*?-->'
+    t.value=t.value[4:-3]
     return t
 
 t_ignore  = ' \t'

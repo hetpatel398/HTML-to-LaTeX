@@ -1,19 +1,64 @@
 \documentclass{article}
 \usepackage{hyperref}
-\title{Het12Patel DEMO leX1}
+\usepackage{comment}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{enumitem}\title{Het12Patel DEMO leX1}
 \begin{document}
 \maketitle
 \section{This is my heading}
-\href{http://www.het.com}{Het\_title}
 
+\subsection{This is subsection}
+
+\subsubsection{This is subsubsection}
+\href{http://www.het.com}{Het\_title}
 \par
-beforefont
+before
+\begin{comment}
+ little comment: <p>&#x03C0; &#960;
+\end{comment}
+
+
+\newline
+font
 {\fontsize{11}{13}\selectfont HET in Font size 10}
 after font
 \newline
+
 \newline
 
-\centerline{\href{http://www.google.com}{Google in center}
-}
+\centerline{\href{http://www.google.com}{Google in center}}
+
+\begin{itemize}
+\item ... Level one, number one...
+
+\begin{enumerate}
+\item ... Level two, number one...
+
+\item ... Level two, number two...
+
+\begin{enumerate}
+\item ... Level three, number one...
+
+\end{enumerate}
+
+\item ... Level two, number three...
+
+\end{enumerate}
+
+\item ... Level one, number two...
+
+\end{itemize}
+
+\begin{comment}
+ little comment: <p>&#x03C0; &#960;</p> 
+\end{comment}
+\begin{description}[style=unboxed, labelwidth=\linewidth, font =\sffamily\itshape\bfseries, listparindent =0pt, before =\sffamily]
+\section{hi}
+\item[\href{https://google.com/home}{Coffee}]
+
+Black hot drink
+\item[Milk]
+
+White cold drink
+\end{description}
 
 \end{document}
