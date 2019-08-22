@@ -117,6 +117,27 @@ def p_u(p):
     'body_data : body_data U_O body_data U_E data'
     p[0]=p[1]+'\\underline{'+p[3]+'}\n'+p[5]
 
+def p_b(p):
+    '''body_data : body_data B_O body_data B_E data
+                 | body_data STRONG_O body_data STRONG_E data'''
+    p[0]=p[1]+'\\textbf{'+p[3]+'}\n'+p[5]
+
+def p_i(p):
+    'body_data : body_data I_O body_data I_E data'
+    p[0]=p[1]+'\\textit{'+p[3]+'}\n'+p[5]
+
+def p_em(p):
+    'body_data : body_data EM_O body_data EM_E data'
+    p[0]=p[1]+'\\{em '+p[3]+'}\n'+p[5]
+
+def p_tt(p):
+    'body_data : body_data TT_O body_data TT_E data'
+    p[0]=p[1]+'\\textt{'+p[3]+'}\n'+p[5]
+
+def p_small(p):
+    'body_data : body_data SMALL_O body_data SMALL_E data'
+    p[0]=p[1]+"\n{\\fontsize{8}{9}\selectfont "+p[3]+"}\n"+p[5]
+
 def p_comment(p):
     'body_data : body_data COMMENT data'
     p[0]=p[1]+"\n\\begin{comment}\n"+p[2]+"\n\\end{comment}\n"+p[3]
