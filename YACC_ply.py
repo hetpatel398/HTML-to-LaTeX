@@ -19,7 +19,7 @@ def p_document(p):
 
 def p_empty(p):
      'empty :'
-     pass
+     p[0]=''
 
 def p_head(p):
     'head : HEAD_O head_data HEAD_E'
@@ -38,34 +38,44 @@ def p_body(p):
     p[0]=p[2]
 
 def p_a(p):
-    'body_data : body_data A_O body_data A_E'
-    p[0]=p[1]+"\\href{"+p[2][1]['href']+"}{"+p[3]+"}"
+    'body_data : body_data A_O body_data A_E data'
+    p[0]=p[1]+"\\href{"+p[2][1]['href']+"}{"+p[3]+"}\n"+p[5]
     # print(p[2])
 
 def p_font(p):
-    'body_data : body_data FONT_O body_data FONT_E'
-    p[0]=p[1]+"\n{\\fontsize{"+p[2][1]['size']+"}{"+str(int(int(p[2][1]['size'])*1.2))+"}\selectfont "+p[3]+"}"
+    'body_data : body_data FONT_O body_data FONT_E data'
+    p[0]=p[1]+"\n{\\fontsize{"+p[2][1]['size']+"}{"+str(int(int(p[2][1]['size'])*1.2))+"}\selectfont "+p[3]+"}\n"+p[5]
 
 def p_center(p):
-    'body_data : body_data CENTER_O body_data CENTER_E'
-    p[0] = p[1]+"\n\\centerline{"+p[3]+"}"
+    'body_data : body_data CENTER_O body_data CENTER_E data'
+    p[0] = p[1]+"\n\\centerline{"+p[3]+"}\n"+p[5]
 
 def p_br(p):
-    '''body_data : body_data BR_S
-                 | body_data BR_O
-                 | body_data BR_O BR_E'''
-    p[0] = p[1]+"\n\\newline"
+    '''body_data : body_data BR_S data
+                 | body_data BR_O data
+                 | body_data BR_O BR_E data'''
+    if len(p) == 4:
+        p[0] = p[1]+"\n\\newline"+p[3]
+    else:
+        p[0] = p[1]+"\n\\newline"+p[4]
 
 def p_p(p):
-    '''body_data : body_data P_O body_data P_E'''
-    p[0] = p[1]+"\n\\par"+p[3]
+    '''body_data : body_data P_O body_data P_E data'''
+    p[0] = p[1]+"\n\\par\n"+p[3]+"\n"+p[5]
 
 def p_H1(p):
-    'body_data : body_data H1_O body_data H1_E'
-    p[0]=p[1]+"\n\\section{"+p[3]+"}\n"
+    'body_data : body_data H1_O body_data H1_E data'
+    p[0]=p[1]+"\n\\section{"+p[3]+"}\n"+p[5]
 
-def p_body_data_string(p):
-    'body_data : STRING'
+def p_body_data_data(p):
+    'body_data : data'
+    p[0]=p[1]
+
+def p_data(p):
+    '''data : STRING
+            | empty
+    '''
+    p[1]=p[1]
     p[1]=p[1].replace('\\','\\\\')
     p[1]=p[1].replace('_','\_')
     p[1]=p[1].replace('#','\#')
@@ -75,10 +85,9 @@ def p_body_data_string(p):
     p[1]=p[1].replace('{','\{')
     p[1]=p[1].replace('}','\}')
     p[0]=p[1]
-
-def p_body_data_star(p):
-    'body_data : body_data body_data'
-    p[0]=p[1]+p[2]
+# def p_body_data_star(p):
+#     'body_data : body_data body_data'
+#     p[0]=p[1]+p[2]
 
 def p_body_data_empty(p):
     'body_data : empty'
@@ -97,7 +106,7 @@ html='''
 <body>
 <h1>This is my heading</h1>
 <a href='http://www.het.com'>Het_title</a>
-<p><font size="11">HET in Font size 10</font><br /><br></p>
+<p>beforefont<font size="11">HET in Font size 10</font>after font<br /><br></p>
 <center><a href='http://www.google.com'>Google in center</a></center>
 </body>
 </html>
