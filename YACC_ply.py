@@ -17,6 +17,7 @@ def p_document(p):
     file.write('\\usepackage[utf8]{inputenc}')
     file.write('\\usepackage[T1]{fontenc}')
     file.write('\\usepackage{enumitem}')
+    file.write('\\usepackage{graphicx}')
 
     file.write(p[2])
     file.write(str(p[3])+'\n')
@@ -44,7 +45,7 @@ def p_body(p):
 
 def p_a(p):
     'body_data : body_data A_O body_data A_E data'
-    p[0]=p[1]+"\\href{"+p[2][1]['href']+"}{"+p[3]+"}"+p[5]
+    p[0]=p[1]+"\\href{"+str(p[2][1].get('href'))+"}{"+p[3]+"}"+p[5]
     # print(p[2])
 
 def p_font(p):
@@ -53,7 +54,7 @@ def p_font(p):
 
 def p_center(p):
     'body_data : body_data CENTER_O body_data CENTER_E data'
-    p[0] = p[1]+"\n\\centerline{"+p[3]+"}\n"+p[5]
+    p[0] = p[1]+"\n\\begin{center}"+p[3]+"\\end{center}\n"+p[5]
 
 def p_br(p):
     '''body_data : body_data BR_S data
@@ -136,7 +137,136 @@ def p_tt(p):
 
 def p_small(p):
     'body_data : body_data SMALL_O body_data SMALL_E data'
-    p[0]=p[1]+"\n{\\fontsize{8}{9}\selectfont "+p[3]+"}\n"+p[5]
+    p[0]=p[1]+"\n{\\fontsize{4}{5}\selectfont "+p[3]+"}\n"+p[5]
+
+def p_sub(p):
+    'body_data : body_data SUB_O body_data SUB_E data'
+    p[0]=p[1]+"\_{"+p[3]+"}"+p[5]
+
+def p_sup(p):
+    'body_data : body_data SUP_O body_data SUP_E data'
+    p[0]=p[1]+"\^{"+p[3]+"}"+p[5]
+
+def p_special_greek_symbol(p):
+    'body_data : body_data GREEK_SPECIAL_SYMBOL data'
+    # print(p[2])
+    p[0]=p[1]+" \\"+p[2]+" "+p[3]
+
+def p_img(p):
+    '''body_data : body_data IMG_S data
+                 | body_data IMG_O data
+                 | body_data IMG_O IMG_E data
+    '''
+    width = p[2][1].get('width')
+    height = p[2][1].get('height')
+    src = p[2][1].get('src')
+    if len(p) ==4:
+        if (width == None and height==None):
+            p[0]=p[1]+"\includegraphics{"+src+"}"+p[3]
+        elif (width != None and height!=None):
+            p[0]=p[1]+"\includegraphics[width="+width+", height="+height+"]{"+src+"}"+p[3]
+        elif (width != None and height==None):
+            p[0]=p[1]+"\includegraphics[width="+width+"]{"+src+"}"+p[3]
+        elif (width == None and height!=None):
+            p[0]=p[1]+"\includegraphics[height="+height+"]{"+src+"}"+p[3]
+    elif len(p)==5:
+        if (width == None and height==None):
+            p[0]=p[1]+"\includegraphics{"+src+"}"+p[4]
+        elif (width != None and height!=None):
+            p[0]=p[1]+"\includegraphics[width="+width+", height="+height+"]{"+src+"}"+p[4]
+        elif (width != None and height==None):
+            p[0]=p[1]+"\includegraphics[width="+width+"]{"+src+"}"+p[4]
+        elif (width == None and height!=None):
+            p[0]=p[1]+"\includegraphics[height="+height+"]{"+src+"}"+p[4]
+
+def p_figure(p):
+    'body_data : body_data FIGURE_O fig_data FIGURE_E data'
+    p[0]=p[1]+"\\begin{figure}[h!]\n"+p[3]+"\\end{figure}\n"+p[5]
+
+def p_fig_data_img(p):
+    '''
+    fig_data : fig_data IMG_O
+             | fig_data IMG_S
+             | fig_data IMG_O IMG_E
+    '''
+    width = p[2][1].get('width')
+    height = p[2][1].get('height')
+    src = p[2][1].get('src')
+    if (width == None and height==None):
+        p[0]=p[1]+"\includegraphics{"+src+"}\n"
+    elif (width != None and height!=None):
+        p[0]=p[1]+"\includegraphics[width="+width+", height="+height+"]{"+src+"}\n"
+    elif (width != None and height==None):
+        p[0]=p[1]+"\includegraphics[width="+width+"]{"+src+"}\n"
+    elif (width == None and height!=None):
+        p[0]=p[1]+"\includegraphics[height="+height+"]{"+src+"}\n"
+
+def p_figcaption(p):
+    'fig_data : fig_data FIGCAPTION_O body_data FIGCAPTION_E'
+    p[0]=p[1]+"\\caption{"+p[3]+"}\n"
+
+def p_fig_data_empty(p):
+    'fig_data : empty'
+    p[0]=''
+
+def p_table(p):
+    '''
+    body_data : body_data TABLE_O caption table_data TABLE_E data
+              | body_data TABLE_O table_data TABLE_E data
+    '''
+    if len(p) == 6:
+        p[0]=p[1]+p[3]+p[5]
+    else:
+        p[0]=p[1]+p[3]+p[4]+p[6]
+
+def p_caption(p):
+    'caption : CAPTION_O body_data CAPTION_E'
+    p[0]=p[2]
+
+def p_table_data(p):
+    '''
+    table_data : first_row rows
+               | empty
+    '''
+    if len(p) == 3:
+        p[0]=p[1]+p[2]
+    else:
+        p[0]=''
+
+def p_first_row(p):
+    'first_row : TR_O td_or_th TR_E'
+    p[0]=p[2]
+
+def p_td_or_th(p):
+    '''
+    td_or_th : td_or_th TD_O body_data TD_E
+             | td_or_th TH_O body_data TH_E
+             | empty
+    '''
+    if len(p)==5:
+        p[0]=p[1]+p[3]
+    else:
+        p[0]=''
+
+def p_rows(p):
+    '''
+    rows : rows TR_O cols TR_E
+         | empty
+    '''
+    if len(p) == 5:
+        p[0]=p[1]+p[3]
+    else:
+        p[0]=''
+
+def p_cols(p):
+    '''
+    cols : cols TD_O body_data TD_E
+         | empty
+    '''
+    if len(p) == 5:
+        p[0]=p[1]+p[3]
+    else:
+        p[0]=''
 
 def p_comment(p):
     'body_data : body_data COMMENT data'
@@ -147,10 +277,14 @@ def p_body_data_data(p):
     p[0]=p[1]
 
 def p_data(p):
-    '''data : STRING
+    '''data : data STRING
+            | data ANOTHER_STRING
             | empty
     '''
-    p[0]=p[1]
+    if len(p)==3:
+        p[0]=p[1]+p[2]
+    else:
+        p[0]=p[1]
 # def p_body_data_star(p):
 #     'body_data : body_data body_data'
 #     p[0]=p[1]+p[2]
@@ -175,6 +309,10 @@ html='''<html>
 <a href='http://www.het.com'>Het_title</a>
 <p>before<!-- little comment: <p>&#x03C0; &#960;--> </p><br>font<font size="11">HET in Font size 10</font>after font<br /><br>
 <center><a href='http://www.google.com'>Google in center</a></center>
+<figure>
+  <figcaption>DEMO image</figcaption>
+<img src="het.png" width='100' height="100"/>
+</figure>
 <ul>
      <li> ... Level one, number one...</li>
      <ol>
@@ -190,9 +328,8 @@ html='''<html>
 <!-- little comment: <p>&#x03C0; &#960;</p> -->
 
 <dl>
-<h1>hi</h1>
-  <u><dt><a href="https://google.com/home">Coffee</a></dt>
-  <dd>Black hot drink</dd></u>
+  <dt><a href="https://google.com/home">Coffee</a></dt>
+  <dd>Black hot drink</dd>
   <dt>Milk</dt>
   <dd>White cold drink</dd>
 </dl>
@@ -201,8 +338,172 @@ html='''<html>
     <div>Div line 2. </div>
     <div>Div line 3</div>
  </p>
+<table border='1'>
+    <tr>
+        <td>1 1</td>
+        <td>1 2</td>
+        <td>1 3</td>
+    </tr>
+    <tr>
+        <td>2 1</td>
+        <td>2 2</td>
+        <td>2 3</td>
+    </tr>
+    <tr>
+        <td>3 1</td>
+        <td>3 2</td>
+        <td>3 3</td>
+    </tr>
+  </table>
 </body>
 </html>
+'''
+
+html='''
+<html><head>
+  <title>Sample document</title>
+
+  </head>
+<body>
+
+
+ <h1>CSS</h1>
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl.Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at,porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget , euismod ac, molestie quis, wisi.
+  </p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget, euismod ac, molestie quis, wisi.
+  </p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget, euismod ac, molestie quis, wisi. Praesent nisl pede,
+ hendrerit semper, accumsan ac, consequat id, nibh.</p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros.
+sem, adipiscing at, porttitor vitae, interdum vitae, elit.</p>
+
+ <p>
+    </p><div>Div line 1. </div>
+    <div>Div line 2. </div>
+    <div>Div line 3</div>
+ <p></p>
+
+  <!-- little comment: <p>&#x03C0; &#960;</p> -->
+  <h1>Special symbols</h1>
+  <h2>Greek symbols</h2>
+  <p><tt>Alpha</tt>Hi &alpha; Hello &beta; &gamma; &pi; &Alpha; </p>
+
+
+  <h2>LaTeX chars</h2>
+  <p>{ } _ ^ @ $ \ % ~ #</p>
+
+  <h1>LaTeX commands in HTML</h1>
+  <p>It's easy to include LaTeX commands in HTML comments.
+<!-- latex:
+\LaTeX{} greets you.
+-->
+  </p>
+
+  <h1>Different font styles and sizes.</h1>
+  <p>Lorem ipsum <font size="7">dolor</font> sit amet, <i>consectetuer</i> adipiscing elit.
+ Nulla ut <strong>lectus</strong> id velit aliquet semper. <tt>Proin vitae</tt> erat. Duis metus. Nam
+ vel nisl. Duis <small>lobortis</small> mi at <font size="1">lorem</font>.</p>
+
+  <a name="img"></a>
+  <h1>Images</h1>
+  <p><!--latex: \LaTeX --> supports only JPG and PNG images.</p>
+  <p></p><center><img src="marley.jpg"></center><p></p>
+  <p><img src="logo.png"></p>
+
+  <h1>Tables</h1>
+
+  <table border="1">
+  <tr><td>1 1</td><td>1 hgf2</td><td>hgfhf1 3</td></tr>
+    <tr><td>2 1</td><td>2 2</td><td>2 3</td></tr>
+    <tr><td>3 1</td><td>3 2</td><td>3 3</td></tr>
+  </table>
+
+  <br>
+
+  <table border="0">
+    <tr><td>Sparta Praha</td><td>28</td></tr>
+    <tr><td>Slovan Liberec</td><td>25</td></tr>
+    <tr><td>Dukla Praha</td><td>24</td></tr>
+    <tr><td>Slavia Praha</td><td>20</td></tr>
+  </table>
+
+  <h1>Subscript, superscript</h1>
+  <p>H<sub>2</sub>O, E = mc<sup>2</sup></p>
+
+  <h1>Hyperlinks</h1>
+  <p>I study at <a href="http://www.mff.cuni.cz/" title="MFF">UK MFF</a>. And
+    what about <a href="#img">images</a>?</p>
+
+  <h1>Some texts</h1>
+<p>
+</p><center>
+They went in single file, running like hounds on a strong scent,
+and an eager light was in their eyes. Nearly due west the broad
+swath of the marching <small>Orcs tramped</small> its ugly slot; the sweet grass
+of Rohan had been bruised and blackened as they passed.
+</center>
+<p></p>
+
+<p>John said, I saw Lucy at lunch, she told</p>
+
+    <h1>Lists and definitions</h1>
+
+<dl>
+  <dt>Dweeb</dt>
+  <dd>young excitable person who may mature
+    into a <em>Nerd</em> or <em>Geek</em></dd>
+  <dt>Hacker</dt>
+  <dd>a clever programmer</dd>
+  <dt>Nerd</dt>
+  <dd>technically bright but socially inept person</dd>
+</dl>
+
+
+<p>In this section, we discuss the lesser known forest elephants.
+...this section continues...</p>
+
+<h2>Habitat</h2>
+<p>Forest elephants do not live in trees but among them.
+...this subsection continues... </p>
+
+<h3>Habitat</h3>
+<p>Forest elephants do not live in trees but among them.
+...this subsection continues...  <strong>AND A LINE FOLLOWS</strong> </p>
+
+
+
+    <h2>List</h2>
+<ul>
+     <li> ... Level one, number one...</li>
+     <ol>
+        <li> ... Level two, number one...</li>
+        <li> ... Level two, number two...</li>
+        <ol>
+           <li> ... Level three, number one...</li>
+        </ol>
+        <li> ... Level two, number three...</li>
+     </ol>
+     <li> ... Level one, number two...</li>
+</ul>
+&helloooooooooo
+</body></html>
 '''
 parser.parse(html)
 file.close()
