@@ -3,51 +3,46 @@
 ########################################################## 2019MCS2562 ##########################################################
 ########################################################### IIT DELHI ###########################################################
 
-from LEX_ply_v1 import tokens, lexer
+from LEX_ply_v2 import tokens, lexer
 import ply.yacc as yacc
+from node import node
 file = open("../tex/out.tex","w")
 start='document'
-
-def p_document(p):
-    '''
-    document : DOCTYPE HTML_O head body HTML_E
-             | HTML_O head body HTML_E
-             | HTML_O body HTML_E
-             | HTML_O HTML_E
-    '''
-    file.write("\\documentclass{article}\n")
-    file.write("\\usepackage{hyperref}\n")
-    file.write("\\usepackage{comment}\n")
-    file.write('\\usepackage[utf8]{inputenc}')
-    file.write('\\usepackage[T1]{fontenc}')
-    file.write('\\usepackage{enumitem}')
-    file.write('\\usepackage{graphicx}')
-    l=len(p)
-    if l==6:
-        file.write(p[3])
-        file.write(p[4]+'\n')
-        file.write("\\end{document}")
-    elif l==5:
-        file.write(p[2])
-        file.write(p[3]+'\n')
-        file.write("\\end{document}")
-    elif l==4:
-        file.write(p[2]+'\n')
-        file.write("\\end{document}")
-    else:
-        file.write("\\n\\end{document}")
 
 def p_empty(p):
      'empty :'
      p[0]=''
 
+def p_document(p):
+    '''
+    document : doctype HTML_O head body HTML_E
+             | empty
+    '''
+    if len(p)==6:
+        p[0]=node('html',sum([p[3],p[4]],[]), p[2][1])
+    else:
+        p[0]=None
+
+def p_doctype(p):
+    '''
+    doctype : DOCTYPE
+            | empty
+    '''
+    p[0]=''
+
 def p_head(p):
-    'head : HEAD_O head_data HEAD_E'
-    p[0]=p[2]+"\n\\begin{document}\n\\maketitle"
+    '''
+    head : HEAD_O head_data HEAD_E
+         | empty
+    '''
+    if len(p)==4:
+        p[0]=node("head",sum([p[2]],[]),p[1][1])
+    else:
+        p[0]=None
 
 def p_head_data(p):
     'head_data : head_data TITLE_O STRING TITLE_E'
-    p[0]=p[1]+"\\title{"+p[3]+"}"
+    p[0]=[p[1],]
 
 def p_head_data_meta(p):
     'head_data : head_data META_O'
@@ -63,8 +58,14 @@ def p_head_data_empty(p):
     p[0]=""
 
 def p_body(p):
-    'body : BODY_O body_data BODY_E'
-    p[0]=p[2]
+    '''
+    body : BODY_O body_data BODY_E
+         | empty
+    '''
+    if len(p)==4:
+        p[0]=p[2]
+    else:
+        p[0]=''
 
 def p_a(p):
     'body_data : body_data A_O body_data A_E data'
@@ -321,213 +322,13 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-html='''<html>
-<head>
-<title>Het12Patel DEMO leX1</title>
-</head>
-<body>
-<h1>This is my heading</h1>
-<h3>This is subsection</h3>
-<h4>This is subsubsection</h4>
-<a href='http://www.het.com'>Het_title</a>
-<p>before<!-- little comment: <p>&#x03C0; &#960;--> </p><br>font<font size="11">HET in Font size 10</font>after font<br /><br>
-<center><a href='http://www.google.com'>Google in center</a></center>
-<figure>
-  <figcaption>DEMO image</figcaption>
-<img src="het.png" width='100' height="100"/>
-</figure>
-<ul>
-     <li> ... Level one, number one...</li>
-     <ol>
-        <li> ... Level two, number one...</li>
-        <li> ... Level two, number two...</li>
-        <ol>
-           <li> ... Level three, number one...</li>
-        </ol>
-        <li> ... Level two, number three...</li>
-     </ol>
-     <li> ... Level one, number two...</li>
-</ul>
-<!-- little comment: <p>&#x03C0; &#960;</p> -->
-
-<dl>
-  <dt><a href="https://google.com/home">Coffee</a></dt>
-  <dd>Black hot drink</dd>
-  <dt>Milk</dt>
-  <dd>White cold drink</dd>
-</dl>
- <p>
-    <div>Div line 1. </div>
-    <div>Div line 2. </div>
-    <div>Div line 3</div>
- </p>
-<table border='1'>
-    <tr>
-        <td>1 1</td>
-        <td>1 2</td>
-        <td>1 3</td>
-    </tr>
-    <tr>
-        <td>2 1</td>
-        <td>2 2</td>
-        <td>2 3</td>
-    </tr>
-    <tr>
-        <td>3 1</td>
-        <td>3 2</td>
-        <td>3 3</td>
-    </tr>
-  </table>
-</body>
-</html>
-'''
-
 html='''
-<!DOCTYPE HTML>
-<html><head>
-  <title>Sample document</title>
-  <meta name='author' content='HET'>
-  </head>
-<body>
-
-
- <h1>CSS</h1>
-  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
- Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
- vel nisl.Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
-sem, adipiscing at,porttitor vitae, interdum vitae, elit. Sed turpis mi,
- tincidunt eget , euismod ac, molestie quis, wisi.
-  </p>
-
-  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
- Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
- vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
-sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
- tincidunt eget, euismod ac, molestie quis, wisi.
-  </p>
-
-  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
- Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
- vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
-sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
- tincidunt eget, euismod ac, molestie quis, wisi. Praesent nisl pede,
- hendrerit semper, accumsan ac, consequat id, nibh.</p>
-
-  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing.
- Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis
- vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros.
-sem, adipiscing at, porttitor vitae, interdum vitae, elit.</p>
-
- <p>
-    </p><div>Div line 1. </div>
-    <div>Div line 2. </div>
-    <div>Div line 3</div>
- <p></p>
-
-  <!-- little comment: <p>&#x03C0; &#960;</p> -->
-  <h1>Special symbols</h1>
-  <h2>Greek symbols</h2>
-  <p><tt>Alpha</tt>Hi &alpha; Hello &beta; &gamma; &pi; &Alpha; </p>
-
-
-  <h2>LaTeX chars</h2>
-  <p>{ } _ ^ @ $ \ % ~ #</p>
-
-  <h1>LaTeX commands in HTML</h1>
-  <p>It's easy to include LaTeX commands in HTML comments.
-<!-- latex:
-\LaTeX{} greets you.
--->
-  </p>
-
-  <h1>Different font styles and sizes.</h1>
-  <p>Lorem ipsum <font size="7">dolor</font> sit amet, <i>consectetuer</i> adipiscing elit.
- Nulla ut <strong>lectus</strong> id velit aliquet semper. <tt>Proin vitae</tt> erat. Duis metus. Nam
- vel nisl. Duis <small>lobortis</small> mi at <font size="1">lorem</font>.</p>
-
-  <a name="img"></a>
-  <h1>Images</h1>
-  <p><!--latex: \LaTeX --> supports only JPG and PNG images.</p>
-  <p></p><center><img src="marley.jpg"></center><p></p>
-  <p><img src="logo.png"></p>
-
-  <h1>Tables</h1>
-
-  <table border="1">
-  <tr><td>1 1</td><td>1 hgf2</td><td>hgfhf1 3</td></tr>
-    <tr><td>2 1</td><td>2 2</td><td>2 3</td></tr>
-    <tr><td>3 1</td><td>3 2</td><td>3 3</td></tr>
-  </table>
-
-  <br>
-
-  <table border="0">
-    <tr><td>Sparta Praha</td><td>28</td></tr>
-    <tr><td>Slovan Liberec</td><td>25</td></tr>
-    <tr><td>Dukla Praha</td><td>24</td></tr>
-    <tr><td>Slavia Praha</td><td>20</td></tr>
-  </table>
-
-  <h1>Subscript, superscript</h1>
-  <p>H<sub>2</sub>O, E = mc<sup>2</sup></p>
-
-  <h1>Hyperlinks</h1>
-  <p>I study at <a href="http://www.mff.cuni.cz/" title="MFF">UK MFF</a>. And
-    what about <a href="#img">images</a>?</p>
-
-  <h1>Some texts</h1>
-<p>
-</p><center>
-They went in single file, running like hounds on a strong scent,
-and an eager light was in their eyes. Nearly due west the broad
-swath of the marching <small>Orcs tramped</small> its ugly slot; the sweet grass
-of Rohan had been bruised and blackened as they passed.
-</center>
-<p></p>
-
-<p>John said, I saw Lucy at lunch, she told</p>
-
-    <h1>Lists and definitions</h1>
-
-<dl>
-  <dt>Dweeb</dt>
-  <dd>young excitable person who may mature
-    into a <em>Nerd</em> or <em>Geek</em></dd>
-  <dt>Hacker</dt>
-  <dd>a clever programmer</dd>
-  <dt>Nerd</dt>
-  <dd>technically bright but socially inept person</dd>
-</dl>
-
-
-<p>In this section, we discuss the lesser known forest elephants.
-...this section continues...</p>
-
-<h2>Habitat</h2>
-<p>Forest elephants do not live in trees but among them.
-...this subsection continues... </p>
-
-<h3>Habitat</h3>
-<p>Forest elephants do not live in trees but among them.
-...this subsection continues...  <strong>AND A LINE FOLLOWS</strong> </p>
-
-
-
-    <h2>List</h2>
-<ul>
-     <li> ... Level one, number one...</li>
-     <ol>
-        <li> ... Level two, number one...</li>
-        <li> ... Level two, number two...</li>
-        <ol>
-           <li> ... Level three, number one...</li>
-        </ol>
-        <li> ... Level two, number three...</li>
-     </ol>
-     <li> ... Level one, number two...</li>
-</ul>
-&helloooooooooo
-</body></html>
+<html>
+    <head><title>Het</title></head>
+    <body>
+        <p>Hello paragraph</p>
+    </body>
+</html>
 '''
 parser.parse(html)
 file.close()

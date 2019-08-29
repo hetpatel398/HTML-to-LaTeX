@@ -3,47 +3,61 @@
 ########################################################## 2019MCS2562 ##########################################################
 ########################################################### IIT DELHI ###########################################################
 
-from LEX_ply_v1 import tokens, lexer
+from LEX_ply_v2 import tokens, lexer
 import ply.yacc as yacc
 file = open("../tex/out.tex","w")
 start='document'
-
-def p_document(p):
-    '''
-    document : DOCTYPE HTML_O head body HTML_E
-             | HTML_O head body HTML_E
-             | HTML_O body HTML_E
-             | HTML_O HTML_E
-    '''
-    file.write("\\documentclass{article}\n")
-    file.write("\\usepackage{hyperref}\n")
-    file.write("\\usepackage{comment}\n")
-    file.write('\\usepackage[utf8]{inputenc}')
-    file.write('\\usepackage[T1]{fontenc}')
-    file.write('\\usepackage{enumitem}')
-    file.write('\\usepackage{graphicx}')
-    l=len(p)
-    if l==6:
-        file.write(p[3])
-        file.write(p[4]+'\n')
-        file.write("\\end{document}")
-    elif l==5:
-        file.write(p[2])
-        file.write(p[3]+'\n')
-        file.write("\\end{document}")
-    elif l==4:
-        file.write(p[2]+'\n')
-        file.write("\\end{document}")
-    else:
-        file.write("\\n\\end{document}")
 
 def p_empty(p):
      'empty :'
      p[0]=''
 
+def p_document(p):
+    '''
+    document : doctype HTML_O head body HTML_E
+             | empty
+    '''
+    if len(p)==6:
+        file.write("\\documentclass{article}\n")
+        file.write("\\usepackage{hyperref}\n")
+        file.write("\\usepackage{comment}\n")
+        file.write('\\usepackage[utf8]{inputenc}')
+        file.write('\\usepackage[T1]{fontenc}')
+        file.write('\\usepackage{enumitem}')
+        file.write('\\usepackage{graphicx}')
+        l=len(p)
+        if l==6:
+            file.write(p[3])
+            file.write(p[4]+'\n')
+            file.write("\\end{document}")
+        elif l==5:
+            file.write(p[2])
+            file.write(p[3]+'\n')
+            file.write("\\end{document}")
+        elif l==4:
+            file.write(p[2]+'\n')
+            file.write("\\end{document}")
+        else:
+            file.write("\\n\\end{document}")
+    else:
+        p[0]=''
+
+def p_doctype(p):
+    '''
+    doctype : DOCTYPE
+            | empty
+    '''
+    p[0]=''
+
 def p_head(p):
-    'head : HEAD_O head_data HEAD_E'
-    p[0]=p[2]+"\n\\begin{document}\n\\maketitle"
+    '''
+    head : HEAD_O head_data HEAD_E
+         | empty
+    '''
+    if len(p)==4:
+        p[0]=p[2]+"\n\\begin{document}\n\\maketitle"
+    else:
+        p[0]=''
 
 def p_head_data(p):
     'head_data : head_data TITLE_O STRING TITLE_E'
@@ -63,8 +77,14 @@ def p_head_data_empty(p):
     p[0]=""
 
 def p_body(p):
-    'body : BODY_O body_data BODY_E'
-    p[0]=p[2]
+    '''
+    body : BODY_O body_data BODY_E
+         | empty
+    '''
+    if len(p)==4:
+        p[0]=p[2]
+    else:
+        p[0]=''
 
 def p_a(p):
     'body_data : body_data A_O body_data A_E data'
