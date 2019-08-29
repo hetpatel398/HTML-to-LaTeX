@@ -1,16 +1,20 @@
-"""
-    document : HTML_O head body HTML_E
-    head : HEAD_O head_data HEAD_E
-    head_data : head_data TITLE_O STRING TITLE_E head_data | empty
-"""
+################################################ YACC FILE IMPLEMENTATION IN PLY ################################################
+########################################################### HET PATEL ###########################################################
+########################################################## 2019MCS2562 ##########################################################
+########################################################### IIT DELHI ###########################################################
 
-from LEX_ply import tokens, lexer
+from LEX_ply_v1 import tokens, lexer
 import ply.yacc as yacc
 file = open("../tex/out.tex","w")
 start='document'
 
 def p_document(p):
-    'document : HTML_O head body HTML_E'
+    '''
+    document : DOCTYPE HTML_O head body HTML_E
+             | HTML_O head body HTML_E
+             | HTML_O body HTML_E
+             | HTML_O HTML_E
+    '''
     file.write("\\documentclass{article}\n")
     file.write("\\usepackage{hyperref}\n")
     file.write("\\usepackage{comment}\n")
@@ -18,10 +22,20 @@ def p_document(p):
     file.write('\\usepackage[T1]{fontenc}')
     file.write('\\usepackage{enumitem}')
     file.write('\\usepackage{graphicx}')
-
-    file.write(p[2])
-    file.write(str(p[3])+'\n')
-    file.write("\\end{document}")
+    l=len(p)
+    if l==6:
+        file.write(p[3])
+        file.write(p[4]+'\n')
+        file.write("\\end{document}")
+    elif l==5:
+        file.write(p[2])
+        file.write(p[3]+'\n')
+        file.write("\\end{document}")
+    elif l==4:
+        file.write(p[2]+'\n')
+        file.write("\\end{document}")
+    else:
+        file.write("\\n\\end{document}")
 
 def p_empty(p):
      'empty :'
@@ -34,6 +48,15 @@ def p_head(p):
 def p_head_data(p):
     'head_data : head_data TITLE_O STRING TITLE_E'
     p[0]=p[1]+"\\title{"+p[3]+"}"
+
+def p_head_data_meta(p):
+    'head_data : head_data META_O'
+    name=p[2][1].get('name')
+    if name=='author':
+        author_name=p[2][1].get('content')
+        p[0]=p[1]+"\\author{"+author_name+"}"
+    else:
+        p[0]=''
 
 def p_head_data_empty(p):
     'head_data : empty'
@@ -360,9 +383,10 @@ html='''<html>
 '''
 
 html='''
+<!DOCTYPE HTML>
 <html><head>
   <title>Sample document</title>
-
+  <meta name='author' content='HET'>
   </head>
 <body>
 

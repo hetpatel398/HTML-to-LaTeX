@@ -1,9 +1,15 @@
+################################################# LEX FILE IMPLEMENTATION IN PLY ################################################
+########################################################### HET PATEL ###########################################################
+########################################################## 2019MCS2562 ##########################################################
+########################################################### IIT DELHI ###########################################################
+
+
 import ply.lex as lex
 
  # List of token names.   This is always required
 tokens = (
     'STRING',       'OPENING_TAG',      'CLOSING_TAG',      'SINGLE_TAG',   'COMMENT',
-    'GREEK_SPECIAL_SYMBOL',
+    'GREEK_SPECIAL_SYMBOL',             'ANOTHER_STRING',   'DOCTYPE',
 
     'HTML_O',       'HEAD_O',           'TITLE_O',          'BODY_O',       'A_O',
     'FONT_O',       'CENTER_O',         'BR_O',             'P_O',          'H1_O',
@@ -12,7 +18,7 @@ tokens = (
     'U_O',          'B_O',              'I_O',              'EM_O',         'TT_O',
     'STRONG_O',     'SMALL_O',          'SUB_O',            'SUP_O',        'IMG_O',
     'FIGURE_O',     'FIGCAPTION_O',     'TABLE_O',          'CAPTION_O',    'TH_O',
-    'TR_O',         'TD_O',
+    'TR_O',         'TD_O',             'META_O',
 
     'HTML_E',       'HEAD_E',           'TITLE_E',          'BODY_E',       'A_E',
     'FONT_E',       'CENTER_E',         'BR_E',             'P_E',          'H1_E',
@@ -23,11 +29,13 @@ tokens = (
     'FIGURE_E',     'FIGCAPTION_E',     'TABLE_E',          'CAPTION_E',    'TH_E',
     'TR_E',         'TD_E',
 
-    'BR_S',         'IMG_S',            'ANOTHER_STRING'
+    'BR_S',         'IMG_S',
 )
 
 word = r'(\w)+'
 anotherword=r'\&(\w+)'
+
+t_DOCTYPE=r'(?i)<!doctype (.*?)>'
 
 def t_GREEK_SPECIAL_SYMBOL(t):
     r'&\w+;'
@@ -111,6 +119,7 @@ def t_error(t):
 lexer = lex.lex()
 
 html='''
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head>
   <title>Sample document</title>
   </head>
@@ -130,6 +139,8 @@ sem, adipiscing at,porttitor vitae, interdum vitae, elit. Sed turpis mi,
 # file = open("Sample document.html","r")
  # Give the lexer some input
 html='''
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 <html><head>
   <title>Sample document</title>
 
@@ -272,12 +283,11 @@ of Rohan had been bruised and blackened as they passed.
      </ol>
      <li> ... Level one, number two...</li>
 </ul>
-
 </body></html>
 '''
 
 
-lexer.input(html)
-
-for token in lexer:
-    print(token)
+# lexer.input(html)
+#
+# for token in lexer:
+#     print(token)
