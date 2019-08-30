@@ -184,11 +184,11 @@ def p_small(p):
 
 def p_sub(p):
     'body_data : body_data SUB_O body_data SUB_E data'
-    p[0]=p[1]+"\_{"+p[3]+"}"+p[5]
+    p[0]=p[1]+"_{"+p[3]+"}"+p[5]
 
 def p_sup(p):
     'body_data : body_data SUP_O body_data SUP_E data'
-    p[0]=p[1]+"\^{"+p[3]+"}"+p[5]
+    p[0]=p[1]+"^{"+p[3]+"}"+p[5]
 
 def p_special_greek_symbol(p):
     'body_data : body_data GREEK_SPECIAL_SYMBOL data'
