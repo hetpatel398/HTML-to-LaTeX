@@ -48,14 +48,19 @@ t_ANOTHER_STRING=r'\&\w+'
 def t_STRING(t):
     # r'^(?!&\w+;.*$).+'
     r'(\w|[ ]|\.|\,|\:|\;|\'|\"|\(|\)|\-|\_|\=|\{|\+|\}|\[|\]|\/|\\|\!|\@|\#|\$|\%|\^|\*|\?|\~|\|\`|\&(\s)+)+'
-    t.value=t.value.replace('\\','\\\\')
-    t.value=t.value.replace('_','\_')
-    t.value=t.value.replace('#','\#')
-    t.value=t.value.replace('%','\%')
-    t.value=t.value.replace('~','\~')
-    t.value=t.value.replace('^','\^')
-    t.value=t.value.replace('{','\{')
-    t.value=t.value.replace('}','\}')
+    t.value=t.value.replace('\\','\\textbackslash')
+    t.value=t.value.replace('_','\\_\\')
+    t.value=t.value.replace('#','\\#\\')
+    t.value=t.value.replace('%','\\%\\')
+    t.value=t.value.replace('$','\\$\\')
+    t.value=t.value.replace('&','\\&\\')
+    t.value=t.value.replace('~','\\sim\\')
+    t.value=t.value.replace('{','\\{\\')
+    t.value=t.value.replace('}','\\}\\')
+    t.value=t.value.replace('^','\\hat{}\\')
+    t.value=t.value.replace('<','\\textless\\')
+    t.value=t.value.replace('>','\\textgreater\\')
+
     return t
 
 def t_SINGLE_TAG(t):
