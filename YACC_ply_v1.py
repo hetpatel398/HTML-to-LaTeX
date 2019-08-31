@@ -473,20 +473,9 @@ sem, adipiscing at, porttitor vitae, interdum vitae, elit.</p>
 
   <h1>Tables</h1>
 
-  <table border="1">
-  <tr><td>1 1</td><td>1 hgf2</td><td>hgfhf1 3</td></tr>
-    <tr><td>2 1</td><td>2 2</td><td>2 3</td></tr>
-    <tr><td>3 1</td><td>3 2</td><td>3 3</td></tr>
-  </table>
 
   <br>
 
-  <table border="0">
-    <tr><td>Sparta Praha</td><td>28</td></tr>
-    <tr><td>Slovan Liberec</td><td>25</td></tr>
-    <tr><td>Dukla Praha</td><td>24</td></tr>
-    <tr><td>Slavia Praha</td><td>20</td></tr>
-  </table>
 
   <h1>Subscript, superscript</h1>
   <p>H<sub>2</sub>O, E = mc<sup>2</sup></p>

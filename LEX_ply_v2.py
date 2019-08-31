@@ -9,25 +9,25 @@ import ply.lex as lex
  # List of token names.   This is always required
 tokens = (
     'STRING',       'OPENING_TAG',      'CLOSING_TAG',      'SINGLE_TAG',   'COMMENT',
-    'GREEK_SPECIAL_SYMBOL',             'ANOTHER_STRING',   'DOCTYPE',
+    'DOCTYPE',      'ANOTHER_STRING',   'GREEK_SPECIAL_SYMBOL',
 
     'HTML_O',       'HEAD_O',           'TITLE_O',          'BODY_O',       'A_O',
     'FONT_O',       'CENTER_O',         'BR_O',             'P_O',          'H1_O',
-    'H2_O',         'H3_O',             'H4_O',             'UL_O',         'LI_O',
-    'OL_O',         'DL_O',             'DT_O',             'DD_O',         'DIV_O',
-    'U_O',          'B_O',              'I_O',              'EM_O',         'TT_O',
-    'STRONG_O',     'SMALL_O',          'SUB_O',            'SUP_O',        'IMG_O',
-    'FIGURE_O',     'FIGCAPTION_O',     'TABLE_O',          'CAPTION_O',    'TH_O',
-    'TR_O',         'TD_O',             'META_O',
+    'H2_O',         'H3_O',             'H4_O',             'H5_O',         'H6_O',
+    'UL_O',         'LI_O',             'OL_O',             'DL_O',         'DT_O',
+    'DD_O',         'DIV_O',            'U_O',              'B_O',          'I_O',
+    'EM_O',         'TT_O',             'STRONG_O',         'SMALL_O',      'SUB_O',
+    'SUP_O',        'IMG_O',            'FIGURE_O',         'FIGCAPTION_O', 'TABLE_O',
+    'CAPTION_O',    'TH_O',             'TR_O',             'TD_O',         'META_O',
 
     'HTML_E',       'HEAD_E',           'TITLE_E',          'BODY_E',       'A_E',
     'FONT_E',       'CENTER_E',         'BR_E',             'P_E',          'H1_E',
-    'H2_E',         'H3_E',             'H4_E',             'UL_E',         'LI_E',
-    'OL_E',         'DL_E',             'DT_E',             'DD_E',         'DIV_E',
-    'U_E',          'B_E',              'I_E',              'EM_E',         'TT_E',
-    'STRONG_E',     'SMALL_E',          'SUB_E',            'SUP_E',        'IMG_E',
-    'FIGURE_E',     'FIGCAPTION_E',     'TABLE_E',          'CAPTION_E',    'TH_E',
-    'TR_E',         'TD_E',
+    'H2_E',         'H3_E',             'H4_E',             'H5_E',         'H6_E',
+    'UL_E',         'LI_E',             'OL_E',             'DL_E',         'DT_E',
+    'DD_E',         'DIV_E',            'U_E',              'B_E',          'I_E',
+    'EM_E',         'TT_E',             'STRONG_E',         'SMALL_E',      'SUB_E',
+    'SUP_E',        'IMG_E',            'FIGURE_E',         'FIGCAPTION_E', 'TABLE_E',
+    'CAPTION_E',    'TH_E',             'TR_E',             'TD_E',
 
     'BR_S',         'IMG_S',
 )

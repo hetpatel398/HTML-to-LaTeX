@@ -4,13 +4,12 @@
 ########################################################### IIT DELHI ###########################################################
 
 from LEX_ply_v2 import tokens, lexer
-from createLatex import createLatexFile
+# from createLatex import createLatexFile_from_HTMLast
+from createLatex import mapHTMLastToLATEXast, createLatexFileFromLatexAst
 import ply.yacc as yacc
 from node import Node
-file = open("../tex/out.tex","w")
+# file = open("../tex/out.tex","w")
 start='document'
-
-
 
 def p_empty(p):
      'empty :'
@@ -26,8 +25,10 @@ def p_document(p):
         root.add_children(p[3])
         root.add_children(p[4])
         # root.traverse()
-        print(root)
-        createLatexFile(root)
+        # print(root)
+        latexAST=mapHTMLastToLATEXast(root)
+        createLatexFileFromLatexAst(latexAST)
+        latexAST.traverse()
         p[0]=root
     else:
         p[0]=p[1]
@@ -141,6 +142,18 @@ def p_H4(p):
     node.add_children(p[3])
     p[0]=sum([p[1],[node],p[5]],[])
 
+def p_H5(p):
+    'body_data : body_data H5_O body_data H5_E data'
+    node=Node("H5")
+    node.add_children(p[3])
+    p[0]=sum([p[1],[node],p[5]],[])
+
+def p_H6(p):
+    'body_data : body_data H6_O body_data H6_E data'
+    node=Node("H6")
+    node.add_children(p[3])
+    p[0]=sum([p[1],[node],p[5]],[])
+
 def p_ordered_list(p):
     'body_data : body_data OL_O body_data OL_E data'
     node=Node("OL")
@@ -216,7 +229,7 @@ def p_tt(p):
 
 def p_small(p):
     'body_data : body_data SMALL_O body_data SMALL_E data'
-    node=Node("SMALL")
+    node=Node('SMALL')
     node.add_children(p[3])
     p[0]=sum([p[1],[node],p[5]],[])
 
@@ -321,7 +334,7 @@ def p_table(p):
 
 def p_caption(p):
     'caption : CAPTION_O body_data CAPTION_E'
-    node=Node("FIGCAPTION")
+    node=Node("CAPTION")
     node.add_children(p[2])
     p[0]=[node]
 
@@ -415,9 +428,149 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-html='''<html>
-<head><title>title_het</title></head>
-<body><p>hi<center>hello</center>bye</p></body></html>
+html='''
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+  <title>Sample document</title>
+
+  </head>
+<body>
+
+
+ <h1>CSS</h1>
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl.Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at,porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget , euismod ac, molestie quis, wisi.
+  </p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget, euismod ac, molestie quis, wisi.
+  </p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis metus. Nam
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros. Nam magna
+sem, adipiscing at, porttitor vitae, interdum vitae, elit. Sed turpis mi,
+ tincidunt eget, euismod ac, molestie quis, wisi. Praesent nisl pede,
+ hendrerit semper, accumsan ac, consequat id, nibh.</p>
+
+  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing.
+ Nulla ut lectus id velit aliquet semper. Proin vitae erat. Duis
+ vel nisl. Duis lobortis mi at lorem. Etiam ornare nibh quis eros.
+sem, adipiscing at, porttitor vitae, interdum vitae, elit.</p>
+
+ <div>
+    <p>Div line 1. </p>
+ </div>
+
+ <div>
+  <p>Div line 2. </p>
+ </div>
+
+ <div>
+  <p>Div line 3.</p>
+</div>
+
+
+  <!-- little comment: <p>&#x03C0; &#960;</p> -->
+  <h1>Special symbols</h1>
+  <h2>Greek symbols</h2>
+
+
+  <h2>LaTeX chars</h2>
+
+
+  <h1>LaTeX commands in HTML</h1>
+  <p>It's easy to include LaTeX commands in HTML comments.
+<!-- latex:
+\LaTeX{} greets you.
+-->
+  </p>
+
+  <h1>Different font styles and sizes.</h1>
+  <p>Lorem ipsum <font size='7'>dolor</font> sit amet, <i>consectetuer</i> adipiscing elit.
+ Nulla ut <strong>lectus</strong> id velit aliquet semper. <tt>Proin vitae</tt> erat. Duis metus. Nam
+ vel nisl. Duis <small>lobortis</small> mi at <font size='1'>lorem</font>.</p>
+
+  <a name="img"></a>
+  <h1>Images</h1>
+  <p><!--latex: \LaTeX --> supports only JPG and PNG images.</p>
+  <p><center><img src='marley.jpg' /></center></p>
+  <p><img src='logo.png' /></p>
+
+  <h1>Tables</h1>
+
+
+  <h1>Subscript, superscript</h1>
+  <p>H<sub>2</sub>O, E = mc<sup>2</sup></p>
+
+  <h1>Hyperlinks</h1>
+  <p>I study at <a href="http://www.mff.cuni.cz" title='MFF'>UK MFF</a>. And
+    what about <a href="#img">images</a>?</p>
+
+  <h1>Some texts</h1>
+<p>
+<center>
+They went in single file, running like hounds on a strong scent,
+and an eager light was in their eyes. Nearly due west the broad
+swath of the marching <small>Orcs tramped</small> its ugly slot; the sweet grass
+of Rohan had been bruised and blackened as they passed.
+</center>
+</p>
+
+<p>John said, I saw Lucy at lunch, she told</p>
+
+    <h1>Lists and definitions</h1>
+
+<DL>
+  <DT>Dweeb</DT>
+  <DD>young excitable person who may mature
+    into a <EM>Nerd</EM> or <EM>Geek</EM></DD>
+  <DT>Hacker</DT>
+  <DD>a clever programmer</DD>
+  <DT>Nerd</DT>
+  <DD>technically bright but socially inept person</DD>
+</DL>
+
+
+<P>In this section, we discuss the lesser known forest elephants.
+...this section continues...</p>
+
+<H2>Habitat</H2>
+<P>Forest elephants do not live in trees but among them.
+...this subsection continues... </p>
+
+<H3>Habitat</H3>
+<P>Forest elephants do not live in trees but among them.
+...this subsection continues...  <strong>AND A LINE FOLLOWS</strong> </p>
+
+
+
+    <h2>List</h2>
+<UL>
+     <LI> ... Level one, number one...</li>
+     <OL>
+        <LI> ... Level two, number one...</li>
+        <LI> ... Level two, number two...</li>
+        <OL>
+           <LI> ... Level three, number one...</li>
+        </OL>
+        <LI> ... Level two, number three...</li>
+     </OL>
+     <LI> ... Level one, number two...</li>
+</UL>
+
+  </body>
+</html>
+
 '''
 parser.parse(html)
-file.close()
+# file.close()

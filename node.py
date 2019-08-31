@@ -1,21 +1,20 @@
 class Node:
-    def __init__(self,value,attributes={},children=[]):
-        self.value=value
+    def __init__(self,type,attributes={},children=[]):
+        self.type=type
         self.attributes=attributes
         self.children=children
-        # self.file = open("../tex/out_ast.tex","w")
 
 
 
     def __repr__(self):
-        s='(%s,%s,%s)'%(self.value, str(self.attributes), str(self.children))
+        s='(%s,%s,%s)'%(self.type, str(self.attributes), str(self.children))
         return s
 
     def add_children(self, list_of_children):
         self.children=self.children+list_of_children
 
     def traverse(self):
-        print(self.value)
+        print(self.type)
         if self.children!=[]:
             for child in self.children:
                 child.traverse()
@@ -61,7 +60,7 @@ class Node:
     #         'STRING':traverse_string
     #     }
     #
-    #     func=switcher.get(self.value)
+    #     func=switcher.get(self.type)
     #     func(self)
     #     # for child in self.children:
     #     #     child.createLatexFile()
