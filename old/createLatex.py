@@ -1,18 +1,10 @@
-########################################## FILE TO GENERATE LATEX AST AND OUTPUT FILE ###########################################
-########################################################### HET PATEL ###########################################################
-########################################################## 2019MCS2562 ##########################################################
-########################################################### IIT DELHI ###########################################################
-
-
+file = open("../tex/out_ast.tex","w")
 
 def mapHTMLastToLATEXast(root):
-    'This function will take a HTML AST and map it to equivalent LaTeX AST'
     mapper={
-        'ROOT':'root',
         'HTML':'doucumentStart',
         'HEAD':'head',
         'TITLE':'title',
-        'AUTHOR':'author',
         'BODY':'begin_document',
         'A':'href',
         'FONT':'fontsize',
@@ -51,24 +43,15 @@ def mapHTMLastToLATEXast(root):
         'TD':'column',
         'TR':'row',
         'COMMENT':'comment',
-        'OPENING_TAG':'string',  #as this will represent unknown tag we will just output it as it is, but it won't give syntax error for unknown tag
-        'CLOSING_TAG':'string',  #as this will represent unknown tag we will just output it as it is, but it won't give syntax error for unknown tag
-        'SINGLE_TAG':'string',  #as this will represent unknown tag we will just output it as it is, but it won't give syntax error for unknown tag
         'STRING':'string'
     }
-    # print(type(root))
-    # print(root)
-    root.type=mapper.get(root.type)     #Getting the euivalent LaTeX root type from mapper dictionary and changing type of root
-    for i in range(len(root.children)): #Recursive call to all children to change their types
+    root.type=mapper.get(root.type)
+    for i in range(len(root.children)):
         root.children[i]=mapHTMLastToLATEXast(root.children[i])
     return root
 
-def createLatexFileFromLatexAst(node, file):
-    "This function will take a tree's root node and a file and will generate output in given file"
+def createLatexFileFromLatexAst(node):
 
-    def traverse_root(node):
-        for child in node.children:
-            createLatexFileFromLatexAst(child,file)
 
     def traverse_documentStart(node):
         file.write("\\documentclass{article}\n")
@@ -78,168 +61,163 @@ def createLatexFileFromLatexAst(node, file):
         file.write('\\usepackage[T1]{fontenc}\n')
         file.write('\\usepackage{enumitem}\n')
         file.write('\\usepackage{graphicx}\n')
-        file.write('\\usepackage[T1]{fontenc}\n')
+        file.write('\\usepackage[T1]{fontenc}')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\n\\end{document}')
 
     def traverse_head(node):
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
 
     def traverse_title(node):
         child=node.children[0] if 0 < len(node.children) else None
         if child!=None:
             file.write("\\title{"+child.attributes.get('value')+"}\n")
 
-    def traverse_author(node):
-        author=node.attributes.get('value')
-        if author!=None:
-            file.write("\\author{"+author+"}\n")
-
     def traverse_begin_document(node):
         file.write("\\begin{document}\n")
         file.write("\\maketitle\n")
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
 
     def traverse_href(node):
         file.write('\\href{%s}{'%(node.attributes.get('href')))
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_fontsize(node):
         size=node.attributes.get('size')
-        if size!=None:
-            file.write("{\\fontsize{"+size+"}{"+str(int(int(size)*1.2))+"}\selectfont ")
+        file.write("{\\fontsize{"+size+"}{"+str(int(int(size)*1.2))+"}\selectfont ")
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
-        if size!=None:
-            file.write('}\n')
+            createLatexFileFromLatexAst(child)
+        file.write('}\n')
 
     def traverse_center(node):
         file.write('\\begin{center}')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\\end{center}\n')
 
     def traverse_newline(node):
-        file.write('\\hfill \\break\n')
+        file.write('\\newline\n')
 
     def traverse_par(node):
+        # print('in par')
         file.write('\\par\n')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
 
     def traverse_section(node):
         file.write('\\section{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_subsection(node):
         file.write('\\subsection{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_subsubsection(node):
         file.write('\\subsubsection{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_paragraph_bold(node):
         file.write('\\textbf{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_enumerate(node):
         file.write('\\begin{enumerate}\n')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\\end{enumerate}\n')
 
     def traverse_itemize(node):
         file.write('\\begin{itemize}\n')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\\end{itemize}\n')
 
     def traverse_item_lst(node):
-        file.write('\\item ')
+        file.write('\\item')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\n')
 
     def traverse_description(node):
         file.write('\\begin{description}[style=unboxed, labelwidth=\\linewidth, font =\\sffamily\\itshape\\bfseries, listparindent =0pt, before =\\sffamily]\n')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\\end{description}\n')
 
     def traverse_item(node):
         file.write('\\item[')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write(']\n')
 
     def traverse_dataString(node):
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
 
     def traverse_divString(node):
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
 
     def traverse_underline(node):
         file.write('\\underline{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_textbf(node):
         file.write('\\textbf{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_textit(node):
         file.write('\\textit{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_em(node):
         file.write('\\emph{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_textt(node):
         file.write('\\textt{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_fontsize4(node):
+        # print("in small")
         file.write("{\\fontsize{4}{4}\selectfont ")
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_sub(node):
         file.write("_{")
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_sup(node):
         file.write("^{")
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\\ ')
 
     def traverse_greek(node):
@@ -296,13 +274,13 @@ def createLatexFileFromLatexAst(node, file):
     def traverse_figure(node):
         file.write('\\begin{figure}[h!]\n')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
-        file.write('\\end{figure}\n')
+            createLatexFileFromLatexAst(child)
+        file.write('end{figure}\n')
 
     def traverse_caption(node):
         file.write('\\caption{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_table(node):
@@ -318,72 +296,59 @@ def createLatexFileFromLatexAst(node, file):
         if border==None or border=='0':
             file.write('\\begin{table}[h!]\n\\centering\n\\begin{tabular}{ '+('c '*numberOfCols)+' }\n')
         else:
-            file.write('\\begin{table}[h!]\n\\centering\n\\begin{tabular}{ |'+('c|'*numberOfCols)+' }\n\\hline')
+            file.write('\\begin{table}[h!]\n\\centering\n\\begin{tabular}{ |'+('c|'*numberOfCols)+' }\n')
         for child in node.children:
-            if child.type=='first_row' or child.type=='row':
-                child.attributes['border']=border
-            createLatexFileFromLatexAst(child,file)
-        if border==None or border=='0':
-            file.write('\\end{tabular}\n\\end{table}\n')
-        else:
-            file.write('\\hline\n\\end{tabular}\n\\end{table}\n')
-
+            createLatexFileFromLatexAst(child)
+        file.write('\\end{tabular}\n\\end{table}\n')
 
     def traverse_table_caption(node):
         file.write('\\caption{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('}\n')
 
     def traverse_first_row(node):
         file.write('\n')
-        border=int(node.attributes.get('border'))
-        if border!=None and border>0 and (node.children[0]=='heading' or node.children[0]=='column'):
-            file.write('\\hline')
-        createLatexFileFromLatexAst(node.children[0],file)
+        createLatexFileFromLatexAst(node.children[0])
         for child in node.children[1:]:
             file.write(' & ')
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         if node.children[0].type=='heading':
             file.write('\\\\ \n\\hline')
         else:
             file.write('\\\\ \n')
 
     def traverse_heading(node):
-        file.write('\\rextbf{')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
-        file.write('}')
+            createLatexFileFromLatexAst(child)
 
     def traverse_column(node):
         file.write(' ')
         for child in node.children:
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write(' ')
 
     def traverse_row(node):
         file.write('\n')
-        border=int(node.attributes.get('border'))
-        if border!=None and border>0:
-            file.write('\\hline')
-        createLatexFileFromLatexAst(node.children[0], file)
+        createLatexFileFromLatexAst(node.children[0])
         for child in node.children[1:]:
             file.write(' & ')
-            createLatexFileFromLatexAst(child,file)
+            createLatexFileFromLatexAst(child)
         file.write('\\\\ \n')
 
     def traverse_comment(node):
-        file.write('\n'+node.attributes.get('value')+'\n')
+        file.write('\n\n')
+        for child in node.children:
+            createLatexFileFromLatexAst(child)
+        file.write('\n\n')
 
     def traverse_string(node):
         file.write(node.attributes.get('value')+'\n')
 
     switcher={
-        'root':traverse_root,
         'doucumentStart':traverse_documentStart,
         'head':traverse_head,
         'title':traverse_title,
-        'author':traverse_author,
         'begin_document':traverse_begin_document,
         'href':traverse_href,
         'fontsize':traverse_fontsize,
@@ -394,6 +359,8 @@ def createLatexFileFromLatexAst(node, file):
         'subsection':traverse_subsection,
         'subsubsection':traverse_subsubsection,
         'paragraph_bold':traverse_paragraph_bold,
+        # 'subparagraph_bold':traverse_subparagraph_bold,
+        # 'subsubparagraph_bold':traverse_subsubparagraph_bold,
         'enumerate':traverse_enumerate,
         'itemize':traverse_itemize,
         'item_lst':traverse_item_lst,
@@ -422,7 +389,64 @@ def createLatexFileFromLatexAst(node, file):
         'comment':traverse_comment,
         'string':traverse_string
     }
-    #Here I have written traverse function for every node type of latex ast which will generate output file by writing some mapping before and after traverssing children
-    #We will get function corrosponding to any node type from switcher dctionary and will call the appropriate function
+
     func=switcher.get(node.type)
-    func(node)          #Initial call to root node after that all calls to child nodes are called in the corrosponding traverse functions
+    func(node)
+
+# def createLatexFile_from_HTMLast(self):
+#
+#     def traverse_html(node):
+#         file.write("\\documentclass{article}\n")
+#         file.write("\\usepackage{hyperref}\n")
+#         file.write("\\usepackage{comment}\n")
+#         file.write('\\usepackage[utf8]{inputenc}\n')
+#         file.write('\\usepackage[T1]{fontenc}\n')
+#         file.write('\\usepackage{enumitem}\n')
+#         file.write('\\usepackage{graphicx}\n')
+#         for child in node.children:
+#             createLatexFile_from_HTMLast(child)
+#         file.write('\\end{document}')
+#
+#
+#     def traverse_head(node):
+#         for child in node.children:
+#             createLatexFile_from_HTMLast(child)
+#
+#     def traverse_title(node):
+#         child=node.children[0] if 0 < len(node.children) else None
+#         file.write("\\title{"+child.attributes.get('value')+"}\n") #if child!=None
+#
+#     def traverse_body(node):
+#         file.write("\\begin{document}\n")
+#         file.write("\\maketitle\n")
+#         for child in node.children:
+#             createLatexFile_from_HTMLast(child)
+#
+#     def traverse_p(node):
+#         file.write("\\par\n")
+#         for child in node.children:
+#             createLatexFile_from_HTMLast(child)
+#
+#     def traverse_center(node):
+#         file.write("\\begin{center}\n")
+#         for child in node.children:
+#             createLatexFile_from_HTMLast(child)
+#         file.write("\\end{center}\n")
+#
+#     def traverse_string(node):
+#         file.write(node.attributes.get('value'))
+#
+#     switcher={
+#         'HTML':traverse_html,
+#         'HEAD':traverse_head,
+#         'TITLE':traverse_title,
+#         'BODY':traverse_body,
+#         'P':traverse_p,
+#         'CENTER':traverse_center,
+#         'STRING':traverse_string
+#     }
+#
+#     func=switcher.get(self.type)
+#     func(self)
+    # for child in self.children:
+    #     createLatexFile(child)

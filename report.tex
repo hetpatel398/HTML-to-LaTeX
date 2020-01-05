@@ -1,0 +1,157 @@
+
+%
+%Multiline comment with --
+%
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{comment}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+
+%
+%Multiline comment with --
+%
+
+%
+%  Multiline comment with --
+%  
+\author{Het Shaileshkumar Patel(2019MCS2562)}
+
+%
+%  Multiline comment with --
+%  
+\title{COP701(Assignment 1) : HTML to LaTeX Converter}
+
+%
+%  Multiline comment with --
+%  
+
+%
+%Multiline comment with --
+%
+\begin{document}
+\maketitle
+
+%
+%  Multiline comment with --
+%  
+\section{Introduction :
+}
+\par
+In this submission I have created HTML to Latex converter in python language using 
+\href{https://www.dabeaz.com/ply/ply.html}{PLY
+}
+library for Lex and YACC implementation
+{\fontsize{4}{4}\selectfont (This report was written in html and then converted using my code to LaTeX to generate pdf.)
+}\ \par
+In this submission I have created five major files.
+\begin{enumerate}
+\item \textbf{run.py
+}\ : Our main file which will be called from the shell file with file arguments to generate output file
+
+\item \textbf{LEX\_ply.py
+}\ : Which will give us our tokenizer(i.e. it will tokenize our input file)
+
+\item \textbf{YACC\_ply.py
+}\ : Which will contain our parser generated using CFG and this file will generate HTML's ast
+
+\item \textbf{node.py
+}\ : This file will contain declaration of node representation which is used to create AST
+
+\item \textbf{createLatex.py
+}\ : This file will contain necessary code to map HTML ast to equivalent LaTeX ast and generate output file using LaTeX ast
+
+\end{enumerate}
+\section{Overview of LEX and YACC operations:
+}
+\subsection{LEX : 
+}
+\begin{itemize}
+\item Here the lex file will read input file and generate the stream of token which will be consumed by YACC.
+
+\item Every token generated will have a type and a value. And every types of tokens that can be generated should be written in a tuple named tokens in this file.
+
+\item Here in my LEX file I haven't written matching expression for every tag but instead I have written functions for opening OPENING\_TAG, CLOSING\_TAG and SINGLE\_TAG
+which will generate token in such a way that their type will be represented by tag's name with some prefix according to the type. e.g. html tag's opening tag's token will have type as HTML\_O
+,html tag's ending tag type will be HTML\_E as it is exit tag of html tag and hence E and br will have type BR\_S as it is single tag
+
+\item If there is any unknown tag that we don't know in advance and we haven't added its type in tokens tuple then it will give its type as OPENING\_TAG, CLOSING\_TAG, SINGLE\_TAG accordingly. And while conversion I have written that part as it is. I have done this to make sure that there are no lexical ot syntax error if we end up having any new tag.
+
+\end{itemize}
+\subsection{YACC : 
+}
+\begin{itemize}
+\item In yacc file I have written CFG required to build parser by YACC.
+
+\item I have written the grammer rules in the YACC file's beginnig as comment
+
+\end{itemize}
+\section{Abstract Syntax Tree Structure : 
+}
+\begin{itemize}
+\item To implement AST I have created a new Node class in node.py . Every node will have the following three fields
+\begin{enumerate}
+\item \textbf{type
+}\ [datatype:String] : This string will hold type of the node
+
+\item \textbf{attributes
+}\ [datatype:dictionary] : This field will hold the attributes reuired for the node in a dictionary. This can be used for several purposes such as I have stores value attribute in STRING type of node and while writing that to file I will get the string from the attributes' dictionary.
+
+\item \textbf{children
+}\ [datatype:list] : This field will hold the children of the current node. We are using this list as we can have multiple children.
+
+\end{enumerate}
+
+\end{itemize}
+\section{HTML Abstract Syntax Tree generation :
+}
+\begin{itemize}
+\item Here in YACC\_ply.py file I have written function for every production in my grammer and p[0] will represent what our left side of the production will return from where it was expanded. Here in every production except the starting procduction I am returning a list of nodes.
+
+\item So in parent production when a terminal's production gets called it will return a list of nodes which I will add to that node's children using function defined in Node class.
+
+\item Suppose I have a production like 
+\textbf{body\_data : body\_data P\_O body\_data P\_E data
+}\ so here I will return 
+\textbf{p[0]=sum([p[1],[Node('P',\{\},p[3])],p[5]],[])
+}\ as p[1] and p[3] are list of nodes and node(s) return by p[1] and p[5] will be the children of our p node whose children will be p[3]. And here sum function will take these three lists of nodes and will give us a single list of nodes which will be assigned to its parent
+
+\end{itemize}
+\section{HTML AST to LaTeX AST Mapping
+}
+\begin{itemize}
+\item In file createLatex.py I have written a function called mapHTMLastToLATEXast(root) which will take a root node as a parameter and will map HTML AST to LaTeX AST
+
+\item In that function I have created a mapping for every node type of HTML AST to LaTeX AST.
+
+\item Now I will convert the type of root node accordingly and then make recursive calls to its children as new roots and so on.
+
+\end{itemize}
+\section{LaTeX output file generation
+}
+\begin{itemize}
+\item I have written a function called createLatexFileFromLatexAst(node,file) in createLatex.py file. To generate output file we will call this function with root node of LaTeX AST and output file as a parameter to this function and we will get the specified output file.
+
+\item In that function I have written some other inner function which are reposnsible for conversion of every node type of LaTeX AST.
+
+\item First of all I will get the corrosponding function for a given node type using a dictionary in which we will have node types as keys \& its corrosponding function as its value.
+
+\item After that we will call that function and In that function I have written some mapping in LaTeX file and then I will recursively call this function on every chidren of this node. After that children list is finished I will write some post operations That are required in LaTeX such as \textbackslashend\{center\}, closing a curly brace, etc. 
+
+\end{itemize}
+
+%
+%  Multiline comment with --
+%  
+
+%
+%Multiline comment with --
+%
+
+\end{document}
+%
+%Multiline comment with --
+%
